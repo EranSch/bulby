@@ -1,14 +1,23 @@
 const { discover } = require('@eschoellhorn/deadlights');
 const express = require('express');
 
-async function main() {
+const PORT = process.env.PORT || 3000;
+
+(async function main() {
     const app = express();
     const bulbs = await discover();
 
-    app.get('/on', () => bulbs.forEach(bulb => bulb.switchOn()));
-    app.get('/off', () => bulbs.forEach(bulb => bulb.switchOff()));
+    app.get('/on', (req, res) => {
+        console.log('Turning all bulbs ON!');
+        bulbs.forEach(bulb => bulb.switchOn());
+        res.end('Bulbs on.');
+    });
 
-    app.listen(3000, () => console.log('API Listening!'));
-}
+    app.get('/off', (req, res) => {
+        console.log('Turning all bulbs OFF!');
+        bulbs.forEach(bulb => bulb.switchOff());
+        res.end('Bulbs off.');
+    });
 
-main();
+    app.listen(PORT, () => console.log(`API Listening on port ${PORT}!`));
+}());
